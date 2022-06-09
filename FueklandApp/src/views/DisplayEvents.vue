@@ -2,13 +2,14 @@
 
   <div class="profile">
   <div class="dislayEvents">
-  <h1>Liste de vos événements ({{ listOfUsers.length }})</h1>
-  <h2>{{joinedUsers}}</h2 >
+  <h1>Événements non rejoints ({{ listOfEvents.length }})</h1>
   </div>
     <br />
     <p class="displayBox">
 
-      <DisplaySingleEvent v-for="event in listOfUsers" :key="event.idEvent" :event="event" />
+      <DisplaySingleEvent @refresh="refresh" v-for="event in myEvents" :key="event.idEvent" :event="event" :mine="true" :participating="false"/>
+      <DisplaySingleEvent @refresh="refresh" v-for="event in listOfEvents" :key="event.idEvent" :event="event" :mine="false" :participating="false"/>
+      <DisplaySingleEvent @refresh="refresh" v-for="event in participatingEvents" :key="event.idEvent" :event="event" :mine="false" :participating="true" />
     
     </p>
   </div>
@@ -24,36 +25,44 @@ export default {
   },
   data() {
     return {
-      listOfUsers: [],
-      joinedUsers: []
+      listOfEvents: [],
+      joinedUsers: [],
+      myEvents: [],
+      participatingEvents: []
     };
   },
   created() {
     this.getEvents();
-    this.getJoiningUsers();
+    this.getAttendees();
   },
   methods: {
     async getEvents() {
       const response = await axios.get(
         "http://localhost:3000/" + sessionStorage.getItem("id") + "/_getEvents"
+
       );
 
       console.log("reponse ", response.data);
       
-      this.listOfUsers = response.data;
+      this.myEvents = response.data[0]
+      this.listOfEvents = response.data[1]
+      this.participatingEvents = response.data[2]
 
     },
-    async getJoiningUsers() {
+    async getAttendees() {
         const response = await axios.get(
-        "http://localhost:3000/" + sessionStorage.getItem("id") + "/_getJoiningUsers"
+        "http://localhost:3000/" + sessionStorage.getItem("id") + "/_getAttendees"
       );
 
-      console.log("reponse ", response.data);
+      console.log("reponse 11", response.data);
       
       this.joinedUsers = response.data;
 
     },
-  },
+    refresh () {
+      this.getEvents()
+    }
+  }
 };
 </script>
 

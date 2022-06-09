@@ -65,7 +65,7 @@ export default {
     },
     async getUsernames(name) {
       const response = await axios.get(
-        "http://localhost:3000/" + name + "/_getUsernames"
+        "http://localhost:3000/" + name + "/" + sessionStorage.getItem("id") + "/_getUsernames"
       );
 
       console.log(response.data);

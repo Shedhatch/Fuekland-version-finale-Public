@@ -28,7 +28,7 @@
       /><br />
       <label for="psw"><b>Modifier votre mot de passe</b></label
       ><br />
-      <input type="password" value="" name="psw" onsubmit="required()"/><br /><label
+      <input type="password" placeholder="Nouveau mot de passe" value="" name="psw" onsubmit="required()"/><br /><label
         class="ParentLabel"
         ><b>Application</b></label
       ><br />
@@ -99,15 +99,10 @@ export default {
   },
   methods: {
    async setSettings() {
-    //  
+     
       const bodyFormData = new FormData(this.$refs.settingsForm);
       console.log("username ", bodyFormData.get('uname'))
       console.log("prenom ", bodyFormData.get('iname'))
-      console.log("nom ", bodyFormData.get('fname'))
-      console.log("icon ", bodyFormData.get('listOfIconsProfile'))
-      console.log("pass ", bodyFormData.get('psw'))
-      console.log("loc ", bodyFormData.get('toggleLoc'))
-       console.log("date ", bodyFormData.get('bday'))
 
       if (bodyFormData.get('psw').length == 0) {
         console.log("in")
@@ -131,10 +126,6 @@ export default {
       this.iname = response.data[0].iname;
       this.locPreset = response.data[0].locationActivated;
       this.profileIcon = response.data[0].profileIcon;
-      this.psw = response.data[0].password;
-     // this.bday = response.data[0].birthdayDate;
-
-      // console.log(new Date(response.data[0].birthdayDate))
 
       //preset for loc options 
       if(this.locPreset == 1) {

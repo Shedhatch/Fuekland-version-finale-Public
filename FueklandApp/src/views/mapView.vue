@@ -1,7 +1,7 @@
 <template>
   <div>
     <br>
-    <l-map style="height: 700px; width: 1000px" :center="markerLatLng" :zoom="zoom">
+    <l-map style="height: 700px; width: 1265px" :center="markerLatLng" :zoom="zoom">
       <l-tile-layer :url="url"></l-tile-layer>
       <l-marker
         :lat-lng="markerLatLng"
@@ -17,13 +17,9 @@
         :icon="icon[friendLoc[1] - 1]"
       ></l-marker> </l-map
     ><br /><br />
-    <!--   <button @click="setCurrentpos">ICI</button>-->
-    <div v-if="isShowingProfile" class="tooltip">
-      {{ name }}
-      <span class="tooltiptext">{{ name }}</span>
-    </div>
       <div class="infos">
-        <h1>{{locationActivated}}</h1>
+        <span style="background-color: #04aa6d; color: #2c3e50; border: 5px solid #04aa6d; border-radius:10px;" v-if="locationActivated == 1">Votre localisation est activée</span>
+        <span style="background-color: #db4a6b; color: #2c3e50 border: 5px solid #db4a6b; border-radius:10px;" v-else>Votre localisation est désactivée</span>
   </div>
   </div>
 </template>
@@ -33,6 +29,9 @@ import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
 import { latLng, Icon, icon } from "leaflet";
 import axios from "axios";
+import Vue from "vue";
+import VueSweetalert2 from "vue-sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 delete Icon.Default.prototype._getIconUrl;
 Icon.Default.mergeOptions({
@@ -104,8 +103,8 @@ export default {
           "/_getCurrentPos"
       );
       this.markerLatLng = latLng(
-        response.data[0].latPos,
-        response.data[0].longPos
+        response.data[0]?.latPos,
+        response.data[0]?.longPos
       );
       this.userProfile = response.data[0].profileIcon
       this.locationActivated = response.data[0].locationActivated
@@ -117,10 +116,10 @@ export default {
           "/_getCurrentPosFromFriends"
       );
 
-      this.latPos = response.data[0].latPos;
-      this.longPos = response.data[0].longPos;
-      this.profileicon = response.data[0].profileicon;
-      this.iname = response.data[0].iname;
+      this.latPos = response.data[0]?.latPos;
+      this.longPos = response.data[0]?.longPos;
+      this.profileicon = response.data[0]?.profileicon;
+      this.iname = response.data[0]?.iname;
 
       this.friendsInfos = [];
       this.friendsLoc = [];
@@ -133,8 +132,12 @@ export default {
       });
     },
     showCurrentFriend: function (index) {
-      alert(this.friendsInfos[index]);
-      //console.log(this.friendsInfos[index])
+      Vue.use(VueSweetalert2);
+
+      
+      this.$swal(
+        this.friendsInfos[index] + " est ici !",
+      );
     },
 
     setCurrentpos: function () {
@@ -214,7 +217,6 @@ export default {
 }
 
 .infos {
-  background: #fff;
   width: 50%;
   font-size: 24px;
   margin: auto;
